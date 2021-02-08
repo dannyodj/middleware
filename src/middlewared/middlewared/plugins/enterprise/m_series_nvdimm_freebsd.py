@@ -1,8 +1,8 @@
 # -*- coding=utf-8 -*-
+import itertools
 import json
 import logging
 import os
-import re
 import struct
 
 import sysctl
@@ -29,14 +29,18 @@ class EnterpriseService(Service):
 
             result = []
 
-            i = 0
-            while True:
+            for i in itertools.count(0):
                 try:
-                    desc = sysctl.filter(f"dev.nvdimm.{i}.%desc")[0].value
+                    pnpinfo = sysctl.filter(f"dev.nvdimm.{i}.%pnpinfo")[0].value
                 except IndexError:
                     break
 
-                size = int(re.match("NVDIMM region ([0-9]+)GB", desc).group(1))
+                if "vendor=0x2c80 device=0x4e36" in pnpinfo:
+                    size = 16
+                elif "vendor=0x2c80 device=0x4e33" in pnpinfo:
+                    size = 32
+                else:
+                    continue
 
                 page = 0
                 offset = 10
@@ -54,8 +58,6 @@ class EnterpriseService(Service):
                     "size": size,
                     "firmware_version": version,
                 })
-
-                i += 1
 
             with open(cache_path, "w") as f:
                 json.dump(result, f)
