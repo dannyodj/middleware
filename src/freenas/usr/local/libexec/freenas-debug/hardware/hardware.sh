@@ -211,6 +211,12 @@ hardware_freebsd()
 		sas3flash -listall
 		section_footer
 	fi
+
+	if [ "$(midclt call truenas.get_chassis_series)" == "M" ]; then
+		section_header "M-Series NVDIMM"
+		midclt call enterprise.m_series_nvdimm | jq
+		section_footer
+	fi
 }
 
 hardware_func()
