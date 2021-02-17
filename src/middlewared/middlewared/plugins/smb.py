@@ -1254,7 +1254,7 @@ class SharingSMBService(SharingService):
                 f'{schema_name}.fsrvp',
                 'FSRVP support is not implemented for clustered shares.'
             )
-        if not data['cluser_volname']:
+        if not data['cluster_volname']:
             verrors.add(
                 f'{schema_name}.cluster_volname',
                 'Cluster volume name is required for clustered shares.'
