@@ -347,7 +347,7 @@ class SharingSMBService(Service):
         if osc.IS_FREEBSD:
             data['vfsobjects'] = ['aio_fbsd']
         elif is_clustered:
-            conf["glusterfs: volume"] = data["cluster_volume"]
+            conf["glusterfs: volume"] = data["cluster_volname"]
             conf["glusterfs: logfile"] = f'/var/log/samba4/glusterfs-{data["cluster_volume"]}.log'
             data['vfsobjects'] = ['glusterfs', 'io_uring']
         else:
