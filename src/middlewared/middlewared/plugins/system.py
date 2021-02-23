@@ -1690,12 +1690,5 @@ async def setup(middleware):
     CRASH_DIR = '/data/crash'
     os.makedirs(CRASH_DIR, exist_ok=True)
     os.chmod(CRASH_DIR, 0o775)
-    if await middleware.call('keyvalue.get', 'run_migration', False):
-        try:
-            cores = Path("/var/db/system/cores")
-            for corefile in cores.iterdir():
-                corefile.unlink()
-        except Exception:
-            self.logger.warning("Failed to clear old core files.", exc_info=True)
 
     middleware.register_hook('system.post_license_update', hook_license_update, sync=False)

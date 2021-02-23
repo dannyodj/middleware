@@ -289,6 +289,14 @@ class SystemDatasetService(ConfigService):
                     await run('sysctl', f"kern.corefile='{corepath}/%N.core'")
                 os.chmod(corepath, 0o775)
 
+                if await middleware.call('keyvalue.get', 'run_migration', False):
+                    try:
+                        cores = Path(corepath)
+                        for corefile in cores.iterdir():
+                            corefile.unlink()
+                    except Exception:
+                        self.logger.warning("Failed to clear old core files.", exc_info=True)
+
             await self.__nfsv4link(config)
             await self.middleware.call('smb.setup_directories')
             # The following should be backgrounded since they may be quite
