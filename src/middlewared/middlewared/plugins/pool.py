@@ -2728,6 +2728,13 @@ class PoolDatasetService(CRUDService):
                 ['id', '!=', sys_config['basename']],
                 ['id', '!^', f'{sys_config["basename"]}/'],
             ])
+
+        boot_pool = await self.middleware.call('boot.pool_name')
+        filters.extend([
+            ['id', '!=', boot_pool],
+            ['id', '!^', f'{boot_pool}/']
+        ])
+
         # top level dataset that stores all things related to gluster config
         # needs to be hidden from local webUI. (This is managed by TrueCommander)
         filters.extend([
